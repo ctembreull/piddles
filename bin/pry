@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+require 'pry'
+
+ENV['RACK_ENV'] = 'test'
+
+# load everything
+require File.expand_path('../../config/application.rb', __FILE__)
+binding.pry
+
+puts 'Done.'
