@@ -23,7 +23,6 @@ task :environment do
   require File.expand_path('../config/environment', __FILE__)
 end
 
-# TODO: replace MyApp with your module setup
 task :routes => :environment do
   Piddles::API.routes.each do |api|
     method = api.route_method.ljust(10)
