@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 ruby '2.3.1'
 
 # Core bits needed to run the thing
-gem 'rack',          '~> 1.4.1'
+gem 'rack',          '~> 1.5.5'
 gem 'rack-cors',     '~> 0.2.8'
 gem 'grape',         '~> 0.7.0'
 gem 'grape-entity',  '~> 0.4.2'
