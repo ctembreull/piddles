@@ -19,5 +19,7 @@ require 'api'
 # In a perfect world, this would all be done with a proper JSON or YAML config
 # file. Today, we're just going to put these names directly into code and call
 # it good.
-TESTERS = %w(piddles puddles pyddles)
-HydrantQueue = Hydrant::Queue.new(TESTERS)
+V!_TESTER = :piddles
+V2_TESTERS = %w(piddles puddles pyddles)
+
+HydrantQueueV1 = Hydrant::Queue.new(V2_TESTERS)

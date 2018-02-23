@@ -21,7 +21,7 @@ module Hydrant
     # allows testing for occurrences between *any* two periods of time but in
     # practice will be used to enforce our testers' somewhat mystifying
     # contractual provisions.
-    def period_count(tester: :piddles, period:, start_time: Time.now)
+    def period_count(tester: V1_TESTER, period:, start_time: Time.now)
       raise HydrantException.new("Invalid start time") unless start_time.is_a? Time
       raise HydrantException.new("Invalid test period") unless period.is_a? ActiveSupport::Duration
 
@@ -51,13 +51,13 @@ module Hydrant
 
     # Add a new timestamp to a tester's history. Only called when buying a hydrant.
     # this method also triggers the cleanup of old records (using truncate_test_record)
-    def add_test_record(tester: :piddles, sell_time: Time.now)
+    def add_test_record(tester: V1_TESTER, sell_time: Time.now)
       self.send(tester.to_sym).add(sell_time.to_i)
       truncate_test_record(tester: tester, sell_time: sell_time)
     end
 
     # Delete any test records for a tester older than 1 hour (default).
-    def truncate_test_record(tester: :piddles, sell_time: Time.now, trim_time: 1.hour)
+    def truncate_test_record(tester: V1_TESTER, sell_time: Time.now, trim_time: 1.hour)
       self.send(tester.to_sym).delete_if {|t| t < (sell_time - trim_time).to_i }
     end
 
@@ -65,7 +65,7 @@ module Hydrant
     # clear the test records of any tester, or, if :all is passed to the tester: argument,
     # clear all queues entirely. Not for production use, unless you want a violation of
     # contract lawsuit from Piddles and all of his pals.
-    def empty_test_record(tester: :piddles)
+    def empty_test_record(tester: V1_TESTER)
       if tester.to_sym == :all
         @testers.each do |t|
           self.send(t.to_sym).clear
@@ -99,6 +99,10 @@ module Hydrant
     end
 
     # V2 ==========
+    # This version is configured for 3 testers, but is theoretically scaleable to many,
+    # many testers based on available memory. Each tester should have a SortedSet object
+    # with an absolute maximum of 5 keys in it at any time, so memory usage should be
+    # very er... wee. (I can make pee jokes too!)
 
     # returns an array of all testers who match the given criteria. Downstream
     # methods will do the logic needed on that array.
