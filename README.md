@@ -1,4 +1,7 @@
-### API Skeleton
-Ruby + Grape.
+### Piddles
 
-Fork it, branch it, add what you need - patches to master won't be accepted unless they improve the *generic* functionality of the skeleton.
+A code problem, expressed as an API.
+
+#### Highlights
+
+The real working code of this app is in `/lib/hydrant.rb`. 

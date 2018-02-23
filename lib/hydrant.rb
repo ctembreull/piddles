@@ -1,11 +1,8 @@
 module Hydrant
   class HydrantException < Exception; end
 
-  # TODO: Move the logic from can_sell_hydrant here. The goal is to have any
-  # request be handled by any tester, if possible, though we'll have to be
-  # very explicit about how we set test records when we call sell_hydrant;
-  # we'll probably need to return the name of the tester so we can explicitly
-  # add a test record to that tester's queue.
+  # Implement a named series of queues that can still be accessed somewhat
+  # dynamically.
   class Queue
     # We don't know and don't care who the testers are. Even if there's just one
     # and it's passed as a string, we dynamically set up each tester as a sorted
@@ -38,6 +35,9 @@ module Hydrant
       self.send(tester.to_sym).map {|o| ((start_time - period).to_i .. start_time.to_i).include? o}.reject{|i| !i}.count
     end
 
+    # Ugh, method naming. Anyway, it works. This returns a Hash of how many requests each
+    # tester has serviced over a given period. Really, it just organizes the results of
+    # period_count for a more complex use case.
     def period_all_count(period:, start_time: Time.now)
       raise HydrantException.new("Invalid start time") unless start_time.is_a? Time
       raise HydrantException.new("Invalid test period") unless period.is_a? ActiveSupport::Duration
@@ -49,8 +49,8 @@ module Hydrant
       results
     end
 
-    # Add a new timestamp to a tester's history. Also, execute a utility function
-    # that trims that tester's history.
+    # Add a new timestamp to a tester's history. Only called when buying a hydrant.
+    # this method also triggers the cleanup of old records (using truncate_test_record)
     def add_test_record(tester: :piddles, sell_time: Time.now)
       self.send(tester.to_sym).add(sell_time.to_i)
       truncate_test_record(tester: tester, sell_time: sell_time)
@@ -61,6 +61,10 @@ module Hydrant
       self.send(tester.to_sym).delete_if {|t| t < (sell_time - trim_time).to_i }
     end
 
+    # This is a utility function added primarily for testing purposes. It will completely
+    # clear the test records of any tester, or, if :all is passed to the tester: argument,
+    # clear all queues entirely. Not for production use, unless you want a violation of
+    # contract lawsuit from Piddles and all of his pals.
     def empty_test_record(tester: :piddles)
       if tester.to_sym == :all
         @testers.each do |t|
@@ -74,7 +78,7 @@ module Hydrant
 
   class << self
     # V1 ==========
-    # only works with a single seller (piddles).
+    # this version only works with a single seller (piddles).
 
     # returns true if there are no sell records in the last 5 minutes, and
     # fewer than 5 in the past hour.
