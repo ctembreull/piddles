@@ -9,7 +9,7 @@ module Hydrant
     # set, and provide a dynamic getter so that they can be called individually.
     def initialize(testers)
       Array.wrap(testers).each do |q|
-        instance_variable_set(('@' + q).to_sym, SortedSet.new)
+        instance_variable_set(('@' + q.to_s).to_sym, SortedSet.new)
         self.class.send(:attr_reader, q.to_sym) # ruby magic
         (@testers ||= []).push(q.to_sym)
       end
