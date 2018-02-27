@@ -8,7 +8,7 @@ All this was built on a Mac, and should run unmodified on any Linux/Unix system.
 
 - Clone this repository: `git clone https://github.com/ctembreull/puddles.git`.
 - Change to the resulting directory: `cd piddles`.
-- Install dependencies: `bundle install`. This app was built with Ruby 2.3.1, which you may need to install before this succeeds.
+- Install dependencies: `bundle install`. This app was built with Ruby 2.3.1, which you may need to install before this succeeds. Also, if you do need to install Ruby, you may also need to install Bundler: `gem install bundler`.
 
 ### Test it!
 
